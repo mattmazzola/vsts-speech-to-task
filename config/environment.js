@@ -4,6 +4,7 @@
 module.exports = function(environment) {
   let ENV = {
     modulePrefix: 'vsts-speech-to-task',
+    podModulePrefix: 'vsts-speech-to-task/pods',
     environment,
     rootURL: '/',
     locationType: 'auto',
