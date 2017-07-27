@@ -10,19 +10,16 @@
   </button>
 </div>
 <div>
-  <h3>Manually Create Item</h3>
+  <h2>Manually Create Item</h2>
 
-  <div class="form-control">
-    <label for="area">Area {{input type="text" id="area" value=area }}</label>
-  </div>
-  <div class="form-control">
-    <label for="title">Title {{input type="text" id="title" value=title }}</label>
-  </div>
-  <div class="form-control">
-    <label for="description">Description {{input type="text" id="description" value=description }}</label>
-  </div>
-  <div class="form-control">
-    <label for="itemtype">Work Item Type {{input type="text" id="itemtype" value=itemType }}</label>
+  <h3>Set Creation Defaults</h3>
+  <div class="form">
+      <label for="account">Account</label> {{input type="text" id="account" value=account }}
+      <label for="area">Area</label> {{input type="text" id="area" value=area }}
+      <label for="itemtype">Work Item Type</label> {{input type="text" id="itemtype" value=itemType }}
+      <label for="tag">Tag</label> {{input type="text" id="tag" value=tag }}
+      <label for="title">Title</label> {{input type="text" id="title" value=title }}
+      <label for="description">Description</label> {{input type="text" id="description" value=description }}
   </div>
 
   <button type="button" class="vsts-stt-button vsts-stt-button--primary" {{action (action "createWorkItem")}}>
