@@ -12,6 +12,9 @@
 <div>
   <h2>Manually Create Item</h2>
 
+
+  <h2>Manually Create Item</h2>
+
   <h3>Set Creation Defaults</h3>
   <div class="form">
       <label for="account">Account</label> {{input type="text" id="account" value=account }}
@@ -23,6 +26,14 @@
   </div>
 
   <button type="button" class="vsts-stt-button vsts-stt-button--primary" {{action (action "createWorkItem")}}>
-    Submit
+    Create {{itemType}}
+  </button>
+
+  <div class="form">
+      <label for="queryName">Query Name</label> {{input type="text" id="queryName" value=queryName }}
+  </div>
+
+  <button type="button" class="vsts-stt-button vsts-stt-button--primary" {{action (action "createQuery")}}>
+    Create Query
   </button>
 </div>
