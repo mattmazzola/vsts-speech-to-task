@@ -44,12 +44,27 @@ export default Oauth2Bearer.extend({
         body: JSON.stringify(body)
       }).then((authenticationResponse) => {
         return authenticationResponse.json()
-          .then(json => {
+          .then(authenticationJson => {
             if (!authenticationResponse.ok) {
-              throw new Error(json)
+              throw new Error(authenticationJson)
             }
             
-            return json
+            return fetch('https://app.vssps.visualstudio.com/_apis/profile/profiles/me?api-version=1.0', {
+              headers: {
+                'Authorization': `Bearer ${authenticationJson.access_token}`,
+                'Accept': 'application/json'
+              }
+            })
+              .then(profileResponse => {
+                return profileResponse.json()
+                  .then(profileJson => {
+                    if (!profileJson.ok) {
+                      throw new Error(JSON.stringify(profileJson))
+                    }
+
+                    return Object.assign({}, profileJson, authenticationJson)
+                  })
+              })
           })
       });
     });
