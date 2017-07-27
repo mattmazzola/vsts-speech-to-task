@@ -1,0 +1,31 @@
+<h1 class="vsts-stt-color-primary">Settings</h1>
+<div>
+  {{#link-to "index" classNames="vsts-stt-button vsts-stt-button-small"}}
+    Back
+  {{/link-to}}
+</div>
+<div>
+  <button type="button" class="vsts-stt-button vsts-stt-button-small vsts-stt-button-secondary" {{action "invalidateSession"}}>
+    Logout
+  </button>
+</div>
+<div>
+  <h3>Manually Create Item</h3>
+
+  <div class="form-control">
+    <label for="area">Area {{input type="text" id="area" value=area }}</label>
+  </div>
+  <div class="form-control">
+    <label for="title">Title {{input type="text" id="title" value=title }}</label>
+  </div>
+  <div class="form-control">
+    <label for="description">Description {{input type="text" id="description" value=description }}</label>
+  </div>
+  <div class="form-control">
+    <label for="itemtype">Work Item Type {{input type="text" id="itemtype" value=itemType }}</label>
+  </div>
+
+  <button type="button" class="vsts-stt-button vsts-stt-button--primary" {{action (action "createWorkItem")}}>
+    Submit
+  </button>
+</div>

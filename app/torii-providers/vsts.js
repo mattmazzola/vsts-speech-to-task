@@ -58,7 +58,7 @@ export default Oauth2Bearer.extend({
               .then(profileResponse => {
                 return profileResponse.json()
                   .then(profileJson => {
-                    if (!profileJson.ok) {
+                    if (!profileResponse.ok) {
                       throw new Error(JSON.stringify(profileJson))
                     }
 

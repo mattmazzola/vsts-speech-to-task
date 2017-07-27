@@ -1,14 +1,11 @@
 <div>
-  <img src="/images/user-photo.png" class="user-photo" />
+  {{#link-to "settings"}}<img src="/images/user-photo.png" class="user-photo" />{{/link-to}}
 </div>
+<h2 class="vsts-stt-color-primary">{{session.data.authenticated.displayName}}</h2>
+<p>&nbsp;</p>
 <div>
-  <button type="button" class="vsts-stt-button vsts-stt-button-small vsts-stt-button-secondary" {{action "invalidateSession"}}>
-    Logout
-  </button>
-</div>
-<h2 class="vsts-stt-color-primary">Push to Talk</h2>
-<div>
-  <button type="button" class="vsts-stt-talk-button">
+  <button type="button" class="vsts-stt-talk-button" {{action (action "record")}}>
     &nbsp;
   </button>
 </div>
+<h2 class="vsts-stt-color-primary">Push to Talk</h2>

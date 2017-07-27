@@ -34,12 +34,16 @@ h1 {
 }
 
 .vsts-stt-button {
+  display: inline-block;
   padding: 0.5em 1em;
   border-radius: 15px;
   color: white;
   border: none;
   font-size: 3rem;
   min-width: 8em;
+  background-color: #aaa;
+  margin: 0.5em;
+  text-decoration: none;
 }
 
 .vsts-stt-button--primary {
@@ -65,8 +69,6 @@ h1 {
 }
 
 .vsts-stt-button-small {
+  border-radius: 7px;
   font-size: 1rem;
-}
-.vsts-stt-button-secondary {
-  background-color: #cecece;
 }
