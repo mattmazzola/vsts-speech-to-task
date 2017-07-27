@@ -4,8 +4,8 @@ export default Ember.Controller.extend({
   session: Ember.inject.service('session'),
 
   actions: {
-    login() {
-      this.get('session').authenticate('authenticator:torii', 'vsts');
+    invalidateSession() {
+      this.get('session').invalidate();
     }
   }
 });

@@ -33,6 +33,17 @@ module.exports = function(environment) {
     contentSecurityPolicy: {
       'font-src': "'self' fonts.gstatic.com",
       'style-src': "'self' fonts.googleapis.com"
+    },
+
+    torii: {
+      providers: {
+        'vsts-oauth2implicit': {
+          apiKey: 'A01E507A-D196-4E34-BE44-9BA16FF8481F',
+          appId: 'A01E507A-D196-4E34-BE44-9BA16FF8481F',
+          redirectUri: 'https://vsts-speech-to-task.surge.sh/torii/redirect.html',
+          scopes: 'vso.identity vso.notification_write vso.project_write vso.work_write vso.workitemsearch'
+        }
+      }
     }
   };
 
