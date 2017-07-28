@@ -10,7 +10,7 @@ export default Ember.Service.extend({
     const { account, area, title, description, itemType, tag } = itemData
     const accessToken = this.get('session.data.authenticated.access_token');
 
-    fetch(`https://${account}.visualstudio.com/DefaultCollection/${area}/_apis/wit/workitems/$${itemType}?api-version=1.0`, {
+    return fetch(`https://${account}.visualstudio.com/DefaultCollection/${area}/_apis/wit/workitems/$${itemType}?api-version=1.0`, {
       method: 'PATCH',
       headers: {
         'Authorization': `Bearer ${accessToken}`,
@@ -24,25 +24,24 @@ export default Ember.Service.extend({
         },
         {
           "op": "add",
+          "path": "/fields/System.Description",
+          "value": description
+        },
+        {
+          "op": "add",
           "path": "/fields/System.Tags",
           "value": tag
         }
       ])
     })
-      .then(response => {
-        return response.json().then(json => {
-          if (!response.ok) throw new Error(json.message || json.ErrorDescription)
-          console.log(json)
-          return json
-        })
-      })
+      .then(r => this.handleResponse(r))
   },
 
   createQuery(queryData) {
     const { account, area, name, tag } = queryData
     const accessToken = this.get('session.data.authenticated.access_token');
 
-    fetch(`https://${account}.visualstudio.com/DefaultCollection/${area}/_apis/wit/queries/My%20Queries?api-version=1.0`, {
+    return fetch(`https://${account}.visualstudio.com/DefaultCollection/${area}/_apis/wit/queries/My%20Queries?api-version=1.0`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${accessToken}`,
@@ -53,12 +52,15 @@ export default Ember.Service.extend({
         "wiql": `Select [System.Id], [System.WorkItemType], [System.Title], [System.State], [System.AreaPath], [System.IterationPath], [System.Tags] From WorkItems Where [System.Tags] Contains "${tag}" order by [Microsoft.VSTS.Common.Priority] asc, [System.CreatedDate] desc`
       })
     })
-      .then(response => {
-        return response.json().then(json => {
-          if (!response.ok) throw new Error(json.message || json.ErrorDescription || JSON.stringify(json))
-          console.log(json)
-          return json
-        })
+      .then(r => this.handleResponse(r))
+  },
+
+  handleResponse(response) {
+    return response.json()
+      .then(json => {
+        if (!response.ok) throw new Error(json.message || json.ErrorDescription || JSON.stringify(json))
+        console.log(json)
+        return json
       })
   }
 });
