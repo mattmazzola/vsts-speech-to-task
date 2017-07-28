@@ -15,12 +15,17 @@ export default Ember.Controller.extend({
     const lastWorkItem = this.get('lastWorkItem')
     return lastWorkItem ? `https://${lastWorkItem.account}.visualstudio.com/${lastWorkItem.fields['System.AreaPath']}/_workitems?id=${lastWorkItem.id}` : ''
   }),
+
+  account: computed('model', function () {
+    return this.get('model.firstObject')
+  }),
+
+  area: computed('account', function () {
+    return this.get('account.projects.firstObject')
+  }),
   
   init() {
     this._super();
-
-    this.set('account', 'mattmazzola')
-    this.set('area', 'schultztables')
     this.set('itemType', 'Task')
     this.set('tag', 'VSTS-Speech-to-Task')
     this.set('queryName', 'VSTS-Speech-to-Task')
@@ -33,25 +38,27 @@ export default Ember.Controller.extend({
 
     createWorkItem() {
       const newItem = {
-        account: this.get('account'),
+        account: this.get('account.accountName'),
         title: this.get('title'),
         description: this.get('description'),
         itemType: this.get('itemType'),
-        area: this.get('area'),
+        area: this.get('area.name'),
         tag: this.get('tag')
       };
 
       this.get('vsts').createWorkItem(newItem)
         .then(workItem => {
           workItem.account = newItem.account
+          this.set('title', '')
+          this.set('description', '')
           this.set('lastWorkItem', workItem)
         })
     },
 
     createQuery() {
       this.get('vsts').createQuery({
-        account: this.get('account'),
-        area: this.get('area'),
+        account: this.get('account.accountName'),
+        area: this.get('area.name'),
         name: this.get('queryName'),
         tag: this.get('tag')
       })

@@ -15,8 +15,8 @@
   <h3>Set Creation Defaults</h3>
   <form {{action (action "createWorkItem") on="submit" }}>
     <div class="form">
-      <label for="account">Account</label> {{input type="text" id="account" value=account required="true" }}
-      <label for="area">Area</label> {{input type="text" id="area" value=area required="true" }}
+      <div>Account</div> <div>{{account.accountName}}</div>
+      <div>Area</div> <div>{{area.name}}</div>
       <label for="itemtype">Item Type</label> {{input type="text" id="itemtype" value=itemType required="true" }}
       <label for="tag">Tag</label> {{input type="text" id="tag" value=tag required="true" }}
       <label for="title">Title</label> {{input type="text" id="title" value=title required="true" }}

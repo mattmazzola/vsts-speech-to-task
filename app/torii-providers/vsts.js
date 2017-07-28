@@ -49,6 +49,9 @@ export default Oauth2Bearer.extend({
       const redirectUri = this.get('redirectUri')
       return this.acquireToken(this.get('redirectUri'), { refreshToken: authData.refresh_token })
         .then(refreshTokenJson => Object.assign(authData, authData))
+        .catch(error => {
+          throw new Error(error)
+        })
     }
 
     return authData;

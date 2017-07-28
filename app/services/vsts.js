@@ -4,6 +4,34 @@ import fetch from 'fetch';
 export default Ember.Service.extend({
   session: Ember.inject.service('session'),
 
+  findAccounts(userId) {
+    const accessToken = this.get('session.data.authenticated.access_token');
+    
+    return fetch(`https://app.vssps.visualstudio.com/_apis/Accounts?ownerId=${userId}&api-version=3.2-preview`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Accept': 'application/json'
+      }
+    })
+      .then(r => this.handleResponse(r))
+      .then(json => json.value)
+  },
+
+  findProjects(accountName) {
+    const accessToken = this.get('session.data.authenticated.access_token');
+    
+    return fetch(`https://${accountName}.visualstudio.com/DefaultCollection/_apis/projects?api-version=1.0`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Accept': 'application/json'
+      }
+    })
+      .then(r => this.handleResponse(r))
+      .then(json => json.value)
+  },
+
   createWorkItem(itemData) {
     console.log(itemData)
 
