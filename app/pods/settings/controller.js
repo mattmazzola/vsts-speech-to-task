@@ -13,7 +13,7 @@ export default Ember.Controller.extend({
 
   lastWorkItemUrl: computed('lastWorkItem', function () {
     const lastWorkItem = this.get('lastWorkItem')
-    return lastWorkItem ? `https://mattmazzola.visualstudio.com/${lastWorkItem.fields['System.AreaPath']}/_workitems?id=${lastWorkItem.id}` : ''
+    return lastWorkItem ? `https://${lastWorkItem.account}.visualstudio.com/${lastWorkItem.fields['System.AreaPath']}/_workitems?id=${lastWorkItem.id}` : ''
   }),
   
   init() {
@@ -32,15 +32,18 @@ export default Ember.Controller.extend({
     },
 
     createWorkItem() {
-      this.get('vsts').createWorkItem({
+      const newItem = {
         account: this.get('account'),
         title: this.get('title'),
         description: this.get('description'),
         itemType: this.get('itemType'),
         area: this.get('area'),
         tag: this.get('tag')
-      })
+      };
+
+      this.get('vsts').createWorkItem(newItem)
         .then(workItem => {
+          workItem.account = newItem.account
           this.set('lastWorkItem', workItem)
         })
     },
@@ -52,6 +55,10 @@ export default Ember.Controller.extend({
         name: this.get('queryName'),
         tag: this.get('tag')
       })
+    },
+
+    dismiss() {
+      this.set('lastWorkItem', null)
     }
   }
 });

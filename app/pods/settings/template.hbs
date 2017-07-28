@@ -27,9 +27,11 @@
         Create {{itemType}}
       </button>
       {{#if lastWorkItem}}
-        <a href={{lastWorkItemUrl}} class="vsts-stt-button vsts-stt-button-small" target="_blank">
-          Open in VSTS ({{lastWorkItemUrl}})
+      <div>
+        <a href={{lastWorkItemUrl}} class="vsts-stt-button vsts-stt-button-small" target="_blank" {{action (action "dismiss") preventDefault=false}}>
+          Open in VSTS
         </a>
+      </div>
       {{/if}}
     </div>
   </form>

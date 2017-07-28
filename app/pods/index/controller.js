@@ -2,6 +2,7 @@ import Ember from 'ember';
 import * as speechSdk from 'Speech.Browser.Sdk';
 
 const {
+  computed,
   inject
 } = Ember;
 
@@ -13,6 +14,14 @@ export default Ember.Controller.extend({
   isRecording: false,
   hypothesis: '',
   recognizer: null,
+
+  lastWorkItem: null,
+
+  lastWorkItemUrl: computed('lastWorkItem', function () {
+    const lastWorkItem = this.get('lastWorkItem')
+    return lastWorkItem ? `https://${lastWorkItem.account}.visualstudio.com/${lastWorkItem.fields['System.AreaPath']}/_workitems?id=${lastWorkItem.id}` : ''
+  }),
+
 
   init() {
     this._super()
@@ -128,17 +137,25 @@ export default Ember.Controller.extend({
     confirm() {
       const vsts = this.get('vsts')
 
-      vsts.createWorkItem({
+      const newItem = {
         account: "mattmazzola",
         area: "schultztables",
         itemType: "Task",
         tag: "tag",
         title: this.get('hypothesis'),
         description: this.get('hypothesis')
-      })
-        .then(() => {
+      }
+
+      vsts.createWorkItem(newItem)
+        .then(workItem => {
+          workItem.account = newItem.account
           this.set('hypothesis', '')
+          this.set('lastWorkItem', workItem)
         })
+    },
+
+    dismiss() {
+      this.set('lastWorkItem', null)
     }
   }
 });
