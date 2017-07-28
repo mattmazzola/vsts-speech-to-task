@@ -18,8 +18,17 @@ export default Ember.Route.extend(AuthenticatedRouteMixin, {
         return Promise.all(accounts.map(account => {
           return vsts.findProjects(account.accountName)
             .then(projects => {
-              account.projects = projects
-              return account
+              return Promise.all(projects.map(project => {
+                return vsts.findWorkItemTypes(account.accountName, project.name)
+                  .then(itemTypes => {
+                    project.itemTypes = itemTypes
+                    return project
+                  })
+              }))
+            })
+            .then(projects => {
+                account.projects = projects
+                return account
             })
         }))
     })

@@ -15,16 +15,34 @@
   <h3>Set Creation Defaults</h3>
   <form {{action (action "createWorkItem") on="submit" }}>
     <div class="form">
-      <div>Account</div> <div>{{account.accountName}}</div>
-      <div>Area</div> <div>{{area.name}}</div>
-      <label for="itemtype">Item Type</label> {{input type="text" id="itemtype" value=itemType required="true" }}
+      <div>Account</div>
+      {{#x-select value=account on-change=(action 'selectAccount') as |xs|}}
+        {{#each model as |account|}}
+          {{#xs.option value=account}}{{account.accountName}}{{/xs.option}}
+        {{/each}}
+      {{/x-select}}
+
+      <div>Project</div>
+      {{#x-select value=project on-change=(action 'selectProject') as |xs|}}
+        {{#each account.projects as |project|}}
+          {{#xs.option value=project}}{{project.name}}{{/xs.option}}
+        {{/each}}
+      {{/x-select}}
+
+      <div>Item Type</div>
+      {{#x-select value=itemType on-change=(action 'selectItemType') as |xs|}}
+        {{#each project.itemTypes as |type|}}
+          {{#xs.option value=type}}{{type.name}}{{/xs.option}}
+        {{/each}}
+      {{/x-select}}
+
       <label for="tag">Tag</label> {{input type="text" id="tag" value=tag required="true" }}
       <label for="title">Title</label> {{input type="text" id="title" value=title required="true" }}
       <label for="description">Description</label> {{input type="text" id="description" value=description required="true" }}
     </div>
     <div class="settings-buttons">
       <button type="submit" class="vsts-stt-button vsts-stt-button--primary">
-        Create {{itemType}}
+        Create {{itemType.name}}
       </button>
       {{#if lastWorkItem}}
       <div>

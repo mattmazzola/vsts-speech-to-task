@@ -32,13 +32,27 @@ export default Ember.Service.extend({
       .then(json => json.value)
   },
 
+  findWorkItemTypes(accountName, project) {
+    const accessToken = this.get('session.data.authenticated.access_token');
+    
+    return fetch(`https://${accountName}.visualstudio.com/DefaultCollection/${project}/_apis/wit/workItemTypes?api-version=1.0`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Accept': 'application/json'
+      }
+    })
+      .then(r => this.handleResponse(r))
+      .then(json => json.value)
+  },
+
   createWorkItem(itemData) {
     console.log(itemData)
 
-    const { account, area, title, description, itemType, tag } = itemData
+    const { account, project, title, description, itemType, tag } = itemData
     const accessToken = this.get('session.data.authenticated.access_token');
 
-    return fetch(`https://${account}.visualstudio.com/DefaultCollection/${area}/_apis/wit/workitems/$${itemType}?api-version=1.0`, {
+    return fetch(`https://${account}.visualstudio.com/DefaultCollection/${project}/_apis/wit/workitems/$${itemType}?api-version=1.0`, {
       method: 'PATCH',
       headers: {
         'Authorization': `Bearer ${accessToken}`,
@@ -66,10 +80,10 @@ export default Ember.Service.extend({
   },
 
   createQuery(queryData) {
-    const { account, area, name, tag } = queryData
+    const { account, project, name, tag } = queryData
     const accessToken = this.get('session.data.authenticated.access_token');
 
-    return fetch(`https://${account}.visualstudio.com/DefaultCollection/${area}/_apis/wit/queries/My%20Queries?api-version=1.0`, {
+    return fetch(`https://${account}.visualstudio.com/DefaultCollection/${project}/_apis/wit/queries/My%20Queries?api-version=1.0`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${accessToken}`,

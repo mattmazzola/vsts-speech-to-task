@@ -20,13 +20,16 @@ export default Ember.Controller.extend({
     return this.get('model.firstObject')
   }),
 
-  area: computed('account', function () {
+  project: computed('account', function () {
     return this.get('account.projects.firstObject')
+  }),
+
+  itemType: computed('project', function () {
+    return this.get('project.itemTypes.firstObject')
   }),
   
   init() {
     this._super();
-    this.set('itemType', 'Task')
     this.set('tag', 'VSTS-Speech-to-Task')
     this.set('queryName', 'VSTS-Speech-to-Task')
   },
@@ -41,8 +44,8 @@ export default Ember.Controller.extend({
         account: this.get('account.accountName'),
         title: this.get('title'),
         description: this.get('description'),
-        itemType: this.get('itemType'),
-        area: this.get('area.name'),
+        itemType: this.get('itemType.name'),
+        project: this.get('project.name'),
         tag: this.get('tag')
       };
 
@@ -58,7 +61,7 @@ export default Ember.Controller.extend({
     createQuery() {
       this.get('vsts').createQuery({
         account: this.get('account.accountName'),
-        area: this.get('area.name'),
+        project: this.get('project.name'),
         name: this.get('queryName'),
         tag: this.get('tag')
       })
@@ -66,6 +69,18 @@ export default Ember.Controller.extend({
 
     dismiss() {
       this.set('lastWorkItem', null)
+    },
+
+    selectAccount(account) {
+      this.set('account', account)
+    },
+
+    selectProject(project) {
+      this.set('project', project)
+    },
+
+    selectItemType(itemType) {
+      this.set('itemType', itemType)
     }
   }
 });
