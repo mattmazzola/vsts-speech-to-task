@@ -4,8 +4,14 @@
 <h2 class="vsts-stt-color-primary">{{session.data.authenticated.displayName}}</h2>
 <p>&nbsp;</p>
 <div>
-  <button type="button" class="vsts-stt-talk-button" {{action (action "record")}}>
+  <button type="button" class="vsts-stt-talk-button {{if isRecording 'vsts-stt-talk-button--isRecording'}}" {{action (action "record")}}>
     &nbsp;
   </button>
 </div>
-<h2 class="vsts-stt-color-primary">Push to Talk</h2>
+<h2 class="{{if isRecording 'vsts-stt-color-warning' 'vsts-stt-color-primary'}}">Push to {{#if isRecording}}Stop{{else}}Talk{{/if}}</h2>
+<div class="hypothesis">{{hypothesis}}</div>
+{{#if hypothesis}}
+  <button type="button" {{action (action "confirm")}}>
+    Confirm?
+  </button>
+{{/if}}
