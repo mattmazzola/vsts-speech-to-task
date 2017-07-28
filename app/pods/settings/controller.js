@@ -1,10 +1,21 @@
 import Ember from 'ember';
 import fetch from 'fetch';
 
-export default Ember.Controller.extend({
-  session: Ember.inject.service('session'),
-  vsts: Ember.inject.service('vsts'),
+const {
+  computed,
+  inject
+} = Ember
 
+export default Ember.Controller.extend({
+  session: inject.service('session'),
+  vsts: inject.service('vsts'),
+  lastWorkItem: null,
+
+  lastWorkItemUrl: computed('lastWorkItem', function () {
+    const lastWorkItem = this.get('lastWorkItem')
+    return lastWorkItem ? `https://mattmazzola.visualstudio.com/${lastWorkItem.fields['System.AreaPath']}/_workitems?id=${lastWorkItem.id}` : ''
+  }),
+  
   init() {
     this._super();
 
@@ -29,6 +40,9 @@ export default Ember.Controller.extend({
         area: this.get('area'),
         tag: this.get('tag')
       })
+        .then(workItem => {
+          this.set('lastWorkItem', workItem)
+        })
     },
 
     createQuery() {

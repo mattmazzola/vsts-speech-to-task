@@ -1,39 +1,47 @@
 <h1 class="vsts-stt-color-primary">Settings</h1>
-<div>
-  {{#link-to "index" classNames="vsts-stt-button vsts-stt-button-small"}}
-    Back
-  {{/link-to}}
+<div class="settings-buttons">
+  <div>
+    {{#link-to "index" classNames="vsts-stt-button vsts-stt-button-small"}} Back {{/link-to}}
+  </div>
+  <div>
+    <button type="button" class="vsts-stt-button vsts-stt-button-small" {{action "invalidateSession"}}>
+      Logout
+    </button>
+  </div>
 </div>
 <div>
-  <button type="button" class="vsts-stt-button vsts-stt-button-small vsts-stt-button-secondary" {{action "invalidateSession"}}>
-    Logout
-  </button>
-</div>
-<div>
-  <h2>Manually Create Item</h2>
-
-
   <h2>Manually Create Item</h2>
 
   <h3>Set Creation Defaults</h3>
+  <form {{action (action "createWorkItem") on="submit" }}>
+    <div class="form">
+      <label for="account">Account</label> {{input type="text" id="account" value=account required="true" }}
+      <label for="area">Area</label> {{input type="text" id="area" value=area required="true" }}
+      <label for="itemtype">Item Type</label> {{input type="text" id="itemtype" value=itemType required="true" }}
+      <label for="tag">Tag</label> {{input type="text" id="tag" value=tag required="true" }}
+      <label for="title">Title</label> {{input type="text" id="title" value=title required="true" }}
+      <label for="description">Description</label> {{input type="text" id="description" value=description required="true" }}
+    </div>
+    <div class="settings-buttons">
+      <button type="submit" class="vsts-stt-button vsts-stt-button--primary">
+        Create {{itemType}}
+      </button>
+      {{#if lastWorkItem}}
+        <a href={{lastWorkItemUrl}} class="vsts-stt-button vsts-stt-button-small" target="_blank">
+          Open in VSTS ({{lastWorkItemUrl}})
+        </a>
+      {{/if}}
+    </div>
+  </form>
+
+
   <div class="form">
-      <label for="account">Account</label> {{input type="text" id="account" value=account }}
-      <label for="area">Area</label> {{input type="text" id="area" value=area }}
-      <label for="itemtype">Work Item Type</label> {{input type="text" id="itemtype" value=itemType }}
-      <label for="tag">Tag</label> {{input type="text" id="tag" value=tag }}
-      <label for="title">Title</label> {{input type="text" id="title" value=title }}
-      <label for="description">Description</label> {{input type="text" id="description" value=description }}
+    <label for="queryName">Query Name</label> {{input type="text" id="queryName" value=queryName }}
   </div>
 
-  <button type="button" class="vsts-stt-button vsts-stt-button--primary" {{action (action "createWorkItem")}}>
-    Create {{itemType}}
-  </button>
-
-  <div class="form">
-      <label for="queryName">Query Name</label> {{input type="text" id="queryName" value=queryName }}
+  <div class="settings-buttons">
+    <button type="button" class="vsts-stt-button vsts-stt-button--primary" {{action (action "createQuery")}}>
+      Create Query
+    </button>
   </div>
-
-  <button type="button" class="vsts-stt-button vsts-stt-button--primary" {{action (action "createQuery")}}>
-    Create Query
-  </button>
 </div>
