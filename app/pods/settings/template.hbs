@@ -10,33 +10,34 @@
   </div>
 </div>
 <div>
-  <h2>Manually Create Item</h2>
+  <h2>Set Creation Defaults</h2>
+  <div class="form">
+    <div>Account</div>
+    {{#x-select value=account on-change=(action 'selectAccount') as |xs|}}
+      {{#each model as |account|}}
+        {{#xs.option value=account}}{{account.accountName}}{{/xs.option}}
+      {{/each}}
+    {{/x-select}}
 
-  <h3>Set Creation Defaults</h3>
+    <div>Project</div>
+    {{#x-select value=project on-change=(action 'selectProject') as |xs|}}
+      {{#each account.projects as |project|}}
+        {{#xs.option value=project}}{{project.name}}{{/xs.option}}
+      {{/each}}
+    {{/x-select}}
+
+    <div>Item Type</div>
+    {{#x-select value=itemType on-change=(action 'selectItemType') as |xs|}}
+      {{#each project.itemTypes as |type|}}
+        {{#xs.option value=type}}{{type.name}}{{/xs.option}}
+      {{/each}}
+    {{/x-select}}
+
+    <label for="tag">Tag</label> {{input type="text" id="tag" value=tag required="true" }}
+  </div>
+  <h2>Manually Create Item</h2>
   <form {{action (action "createWorkItem") on="submit" }}>
     <div class="form">
-      <div>Account</div>
-      {{#x-select value=account on-change=(action 'selectAccount') as |xs|}}
-        {{#each model as |account|}}
-          {{#xs.option value=account}}{{account.accountName}}{{/xs.option}}
-        {{/each}}
-      {{/x-select}}
-
-      <div>Project</div>
-      {{#x-select value=project on-change=(action 'selectProject') as |xs|}}
-        {{#each account.projects as |project|}}
-          {{#xs.option value=project}}{{project.name}}{{/xs.option}}
-        {{/each}}
-      {{/x-select}}
-
-      <div>Item Type</div>
-      {{#x-select value=itemType on-change=(action 'selectItemType') as |xs|}}
-        {{#each project.itemTypes as |type|}}
-          {{#xs.option value=type}}{{type.name}}{{/xs.option}}
-        {{/each}}
-      {{/x-select}}
-
-      <label for="tag">Tag</label> {{input type="text" id="tag" value=tag required="true" }}
       <label for="title">Title</label> {{input type="text" id="title" value=title required="true" }}
       <label for="description">Description</label> {{input type="text" id="description" value=description required="true" }}
     </div>
@@ -54,7 +55,8 @@
     </div>
   </form>
 
-
+  <h2>Create Query</h2>
+  
   <div class="form">
     <label for="queryName">Query Name</label> {{input type="text" id="queryName" value=queryName }}
   </div>
