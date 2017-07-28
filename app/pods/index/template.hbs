@@ -11,12 +11,14 @@
 <h2 class="{{if isRecording 'vsts-stt-color-warning' 'vsts-stt-color-primary'}}">Push to {{#if isRecording}}Stop{{else}}Talk{{/if}}</h2>
 <div class="hypothesis">{{hypothesis}}</div>
 {{#if hypothesis}}
-  <button type="button" class="vsts-stt-button vsts-stt-button-small"  {{action (action "confirm")}}>
-    Confirm?
-  </button>
+  <div class="settings-buttons">
+    <button type="button" class="vsts-stt-button vsts-stt-button-small"  {{action (action "confirm")}}>
+      Confirm?
+    </button>
+  </div>
 {{/if}}
 {{#if lastWorkItem}}
-  <div>
+  <div class="settings-buttons">
     <a href={{lastWorkItemUrl}} class="vsts-stt-button vsts-stt-button-small" target="_blank" {{action (action "dismiss") preventDefault=false}}>
       Open in VSTS
     </a>

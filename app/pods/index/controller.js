@@ -139,7 +139,7 @@ export default Ember.Controller.extend({
 
       const newItem = {
         account: "mattmazzola",
-        area: "schultztables",
+        project: "schultztables",
         itemType: "Task",
         tag: "tag",
         title: this.get('hypothesis'),
