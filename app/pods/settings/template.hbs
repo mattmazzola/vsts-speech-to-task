@@ -33,7 +33,7 @@
       {{/each}}
     {{/x-select}}
 
-    <label for="tag">Tag</label> {{input type="text" id="tag" value=tag required="true" }}
+    <label for="tag">Tag</label> {{input type="text" id="tag" value=vsts.tag required="true" }}
   </div>
   <h2>Manually Create Item</h2>
   <form {{action (action "createWorkItem") on="submit" }}>

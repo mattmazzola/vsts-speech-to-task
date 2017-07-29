@@ -30,7 +30,6 @@ export default Ember.Controller.extend({
   
   init() {
     this._super();
-    this.set('tag', 'VSTS-Speech-to-Task')
     this.set('queryName', 'VSTS-Speech-to-Task')
   },
 
@@ -41,17 +40,13 @@ export default Ember.Controller.extend({
 
     createWorkItem() {
       const newItem = {
-        account: this.get('account.accountName'),
         title: this.get('title'),
-        description: this.get('description'),
-        itemType: this.get('itemType.name'),
-        project: this.get('project.name'),
-        tag: this.get('tag')
+        description: this.get('description')
       };
 
       this.get('vsts').createWorkItem(newItem)
         .then(workItem => {
-          workItem.account = newItem.account
+          workItem.account = this.get('vsts.account.accountName')
           this.set('title', '')
           this.set('description', '')
           this.set('lastWorkItem', workItem)
@@ -60,10 +55,7 @@ export default Ember.Controller.extend({
 
     createQuery() {
       this.get('vsts').createQuery({
-        account: this.get('account.accountName'),
-        project: this.get('project.name'),
-        name: this.get('queryName'),
-        tag: this.get('tag')
+        name: this.get('queryName')
       })
     },
 

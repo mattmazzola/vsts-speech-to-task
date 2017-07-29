@@ -1,12 +1,76 @@
 import Ember from 'ember';
 import fetch from 'fetch';
 
+const {
+  computed,
+  inject
+} = Ember
+
 export default Ember.Service.extend({
-  session: Ember.inject.service('session'),
+  session: inject.service('session'),
+  modelPromise: null,
+  model: null,
+
+  init() {
+    this._super();
+    this.set('tag', 'VSTS-Speech-to-Task')
+    this.set('queryName', 'VSTS-Speech-to-Task')
+  },
+
+  account: computed('model', function () {
+    return this.get('model.firstObject')
+  }),
+
+  project: computed('account', function () {
+    return this.get('account.projects.firstObject')
+  }),
+
+  itemType: computed('project', function () {
+    return this.get('project.itemTypes.firstObject')
+  }),
+
+  getModel() {
+    if (this.get('modelPromise')) {
+      return this.get('modelPromise')
+    }
+
+    const userId = this.get('session.data.authenticated.id')
+    if (!userId) {
+      throw new Error(`You attempted to get the VSTS before the session was authenticaed. You must have an access token and user id to query VSTS`)
+    }
+
+    const modelPromise = this.findAccounts(userId)
+      .then(accounts => {
+        return Promise.all(accounts.map(account => {
+          return this.findProjects(account.accountName)
+            .then(projects => {
+              return Promise.all(projects.map(project => {
+                return this.findWorkItemTypes(account.accountName, project.name)
+                  .then(itemTypes => {
+                    project.itemTypes = itemTypes
+                    return project
+                  })
+              }))
+            })
+            .then(projects => {
+              account.projects = projects
+              return account
+            })
+        }))
+      })
+      .then(model => {
+        this.set('model', model)
+        return model
+      })
+
+    this.set('modelPromise', modelPromise)
+
+    return modelPromise
+  },
 
   findAccounts(userId) {
     const accessToken = this.get('session.data.authenticated.access_token');
-    
+
     return fetch(`https://app.vssps.visualstudio.com/_apis/Accounts?ownerId=${userId}&api-version=3.2-preview`, {
       method: 'GET',
       headers: {
@@ -20,7 +84,7 @@ export default Ember.Service.extend({
 
   findProjects(accountName) {
     const accessToken = this.get('session.data.authenticated.access_token');
-    
+
     return fetch(`https://${accountName}.visualstudio.com/DefaultCollection/_apis/projects?api-version=1.0`, {
       method: 'GET',
       headers: {
@@ -34,7 +98,7 @@ export default Ember.Service.extend({
 
   findWorkItemTypes(accountName, project) {
     const accessToken = this.get('session.data.authenticated.access_token');
-    
+
     return fetch(`https://${accountName}.visualstudio.com/DefaultCollection/${project}/_apis/wit/workItemTypes?api-version=1.0`, {
       method: 'GET',
       headers: {
@@ -47,9 +111,18 @@ export default Ember.Service.extend({
   },
 
   createWorkItem(itemData) {
-    console.log(itemData)
+    console.log(`CreateWorkItem: input: ${JSON.stringify(itemData, null, '  ')}`)
+    const defaults = {
+      account: this.get('account.accountName'),
+      itemType: this.get('itemType.name'),
+      project: this.get('project.name'),
+      tag: this.get('tag')
+    };
 
-    const { account, project, title, description, itemType, tag } = itemData
+    const merged = Object.assign({}, defaults, itemData)
+    console.log(`CreateWorkItem merged: ${JSON.stringify(merged, null, '  ')}`)
+    const { account, project, title, description, itemType, tag } = merged
+
     const accessToken = this.get('session.data.authenticated.access_token');
 
     return fetch(`https://${account}.visualstudio.com/DefaultCollection/${project}/_apis/wit/workitems/$${itemType}?api-version=1.0`, {
@@ -80,7 +153,17 @@ export default Ember.Service.extend({
   },
 
   createQuery(queryData) {
-    const { account, project, name, tag } = queryData
+    console.log(`createQuery: input: ${JSON.stringify(queryData, null, '  ')}`)
+    const defaults = {
+      account: this.get('account.accountName'),
+      project: this.get('project.name'),
+      tag: this.get('tag')
+    };
+
+    const merged = Object.assign({}, defaults, queryData)
+    console.log(`createQuery merged: ${JSON.stringify(merged, null, '  ')}`)
+    const { account, project, name, tag } = merged
+
     const accessToken = this.get('session.data.authenticated.access_token');
 
     return fetch(`https://${account}.visualstudio.com/DefaultCollection/${project}/_apis/wit/queries/My%20Queries?api-version=1.0`, {
