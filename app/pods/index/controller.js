@@ -10,7 +10,7 @@ export default Ember.Controller.extend({
   session: inject.service('session'),
   vsts: inject.service('vsts'),
 
-  subscriptionKey: 'ecbc3f3d0c894cb088767321f4ae73f7',
+  subscriptionKey: 'bd10b15819ac43e1bb6c810c577a6a6c',
   isRecording: false,
   hypothesis: '',
   recognizer: null,
