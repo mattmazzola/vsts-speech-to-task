@@ -13,22 +13,22 @@
   <h2>Set Creation Defaults</h2>
   <div class="form">
     <div>Account</div>
-    {{#x-select value=account on-change=(action 'selectAccount') as |xs|}}
-      {{#each model as |account|}}
+    {{#x-select value=vsts.account on-change=(action 'selectAccount') as |xs|}}
+      {{#each vsts.model as |account|}}
         {{#xs.option value=account}}{{account.accountName}}{{/xs.option}}
       {{/each}}
     {{/x-select}}
 
     <div>Project</div>
-    {{#x-select value=project on-change=(action 'selectProject') as |xs|}}
-      {{#each account.projects as |project|}}
+    {{#x-select value=vsts.project on-change=(action 'selectProject') as |xs|}}
+      {{#each vsts.account.projects as |project|}}
         {{#xs.option value=project}}{{project.name}}{{/xs.option}}
       {{/each}}
     {{/x-select}}
 
     <div>Item Type</div>
-    {{#x-select value=itemType on-change=(action 'selectItemType') as |xs|}}
-      {{#each project.itemTypes as |type|}}
+    {{#x-select value=vsts.itemType on-change=(action 'selectItemType') as |xs|}}
+      {{#each vsts.project.itemTypes as |type|}}
         {{#xs.option value=type}}{{type.name}}{{/xs.option}}
       {{/each}}
     {{/x-select}}

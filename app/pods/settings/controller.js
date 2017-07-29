@@ -15,18 +15,6 @@ export default Ember.Controller.extend({
     const lastWorkItem = this.get('lastWorkItem')
     return lastWorkItem ? `https://${lastWorkItem.account}.visualstudio.com/${lastWorkItem.fields['System.AreaPath']}/_workitems?id=${lastWorkItem.id}` : ''
   }),
-
-  account: computed('model', function () {
-    return this.get('model.firstObject')
-  }),
-
-  project: computed('account', function () {
-    return this.get('account.projects.firstObject')
-  }),
-
-  itemType: computed('project', function () {
-    return this.get('project.itemTypes.firstObject')
-  }),
   
   init() {
     this._super();
@@ -64,15 +52,15 @@ export default Ember.Controller.extend({
     },
 
     selectAccount(account) {
-      this.set('account', account)
+      this.set('vsts.account', account)
     },
 
     selectProject(project) {
-      this.set('project', project)
+      this.set('vsts.project', project)
     },
 
     selectItemType(itemType) {
-      this.set('itemType', itemType)
+      this.set('vsts.itemType', itemType)
     }
   }
 });

@@ -57,6 +57,7 @@ export default Ember.Controller.extend({
 
   updateRecognizedPhrase(phrase) {
     console.log(phrase)
+    this.set('hypothesis', phrase)
   },
 
   onSpeechEndDetected() {
@@ -97,10 +98,10 @@ export default Ember.Controller.extend({
           this.onSpeechEndDetected();
           break;
         case "SpeechSimplePhraseEvent":
-          this.updateRecognizedPhrase(JSON.stringify(event.Result, null, 3));
+          this.updateRecognizedPhrase(event.Result.DisplayText);
           break;
         case "SpeechDetailedPhraseEvent":
-          this.updateRecognizedPhrase(JSON.stringify(event.Result, null, 3));
+          this.updateRecognizedPhrase(event.Result.DisplayText);
           break;
         case "RecognitionEndedEvent":
           this.onComplete();
@@ -138,17 +139,13 @@ export default Ember.Controller.extend({
       const vsts = this.get('vsts')
 
       const newItem = {
-        account: "mattmazzola",
-        project: "schultztables",
-        itemType: "Task",
-        tag: "tag",
         title: this.get('hypothesis'),
         description: this.get('hypothesis')
       }
 
       vsts.createWorkItem(newItem)
         .then(workItem => {
-          workItem.account = newItem.account
+          workItem.account = this.get('vsts.account.accountName')
           this.set('hypothesis', '')
           this.set('lastWorkItem', workItem)
         })
