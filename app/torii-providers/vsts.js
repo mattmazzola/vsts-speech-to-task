@@ -1,4 +1,3 @@
-import Ember from 'ember';
 import fetch from 'fetch';
 import Oauth2Bearer from 'torii/providers/oauth2-bearer';
 import { configurable } from 'torii/configuration';
@@ -39,21 +38,28 @@ export default Oauth2Bearer.extend({
   },
 
   fetch(authData) {
-    const [head, body, tail] = authData.access_token.split('.')
+    const body = authData.access_token.split('.')[1]
     const tokenData = JSON.parse(atob(body))
     const tokenExpirationMoment = moment(tokenData.exp * 1000)
     const now = moment()
-    const allowedDuration = moment.duration(40, 'minutes');
+    const allowedDuration = moment.duration(50, 'minutes');
 
     if ((tokenExpirationMoment - now) < allowedDuration.asMilliseconds()) {
       const redirectUri = this.get('redirectUri')
-      return this.acquireToken(this.get('redirectUri'), { refreshToken: authData.refresh_token })
-        .then(refreshTokenJson => Object.assign(authData, refreshTokenJson))
+      console.log(`Attempt to acquire refresh token: redirectUri: ${redirectUri}, refreshToken: ${authData.refresh_token}`)
+      return this.acquireToken(redirectUri, { refreshToken: authData.refresh_token })
+        .then(refreshTokenJson => {
+          const newAuthData = Object.assign(authData, refreshTokenJson)
+          console.log(`Successfully acquired new token using refresh token. Merging with existing auth data. ${JSON.stringify(newAuthData, null, '  ')}`)
+          return newAuthData
+        })
         .catch(error => {
+          console.log(`Error during refresh token acquisiton. Error ${error}`)
           throw new Error(error)
         })
     }
 
+    console.log(`Access token does not expire within ${allowedDuration.asMinutes()} minutes, so re-using existing tokens.`)
     return authData;
   },
 

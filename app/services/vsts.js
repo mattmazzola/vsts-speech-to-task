@@ -105,8 +105,6 @@ export default Ember.Service.extend({
     console.log(`CreateWorkItem merged: ${JSON.stringify(merged, null, '  ')}`)
     const { account, project, title, description, itemType, tag } = merged
 
-    const accessToken = this.get('session.data.authenticated.access_token');
-
     return this.patchJson(`https://${account}.visualstudio.com/DefaultCollection/${project}/_apis/wit/workitems/$${itemType}?api-version=1.0`, [
       {
         "op": "add",

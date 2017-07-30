@@ -46,7 +46,7 @@ export default Ember.Controller.extend({
     // Alternatively use  for token auth
     const fetchCallback = () => {
       const tokenDeferred = new SDK.Deferred()
-      const tokenPromise = this.acquireCognitiveServicesToken()
+      this.acquireCognitiveServicesToken()
           .then(token => tokenDeferred.Resolve(token))
       return tokenDeferred.promise
     }
