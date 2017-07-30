@@ -48,7 +48,7 @@ export default Oauth2Bearer.extend({
     if ((tokenExpirationMoment - now) < allowedDuration.asMilliseconds()) {
       const redirectUri = this.get('redirectUri')
       return this.acquireToken(this.get('redirectUri'), { refreshToken: authData.refresh_token })
-        .then(refreshTokenJson => Object.assign(authData, authData))
+        .then(refreshTokenJson => Object.assign(authData, refreshTokenJson))
         .catch(error => {
           throw new Error(error)
         })

@@ -10,7 +10,6 @@ export default Ember.Controller.extend({
   session: inject.service('session'),
   vsts: inject.service('vsts'),
 
-  subscriptionKey: 'bd10b15819ac43e1bb6c810c577a6a6c',
   isRecording: false,
   hypothesis: '',
   recognizer: null,
@@ -29,13 +28,12 @@ export default Ember.Controller.extend({
       speechSdk,
       speechSdk.RecognitionMode.Interactive,
       "en-US",
-      speechSdk.SpeechResultFormat["Simple"],
-      this.get('subscriptionKey'))
+      speechSdk.SpeechResultFormat["Simple"])
 
     this.set('recognizer', recognizer)
   },
 
-  setupRecognizer(SDK, recognitionMode, language, format, subscriptionKey) {
+  setupRecognizer(SDK, recognitionMode, language, format) {
     var recognizerConfig = new SDK.RecognizerConfig(
       new SDK.SpeechConfig(
         new SDK.Context(
@@ -45,10 +43,34 @@ export default Ember.Controller.extend({
       language,           // Supported laguages are specific to each recognition mode. Refer to docs.
       format);            // SDK.SpeechResultFormat.Simple (Options - Simple/Detailed)
 
-    // Alternatively use SDK.CognitiveTokenAuthentication(fetchCallback, fetchOnExpiryCallback) for token auth
-    var authentication = new SDK.CognitiveSubscriptionKeyAuthentication(subscriptionKey);
+    // Alternatively use  for token auth
+    const fetchCallback = () => {
+      const tokenDeferred = new SDK.Deferred()
+      const tokenPromise = this.acquireCognitiveServicesToken()
+          .then(token => tokenDeferred.Resolve(token))
+      return tokenDeferred.promise
+    }
+
+    const fetchOnExpiryCallback = fetchCallback
+
+    var authentication = new SDK.CognitiveTokenAuthentication(fetchCallback, fetchOnExpiryCallback);
 
     return SDK.CreateRecognizer(recognizerConfig, authentication);
+  },
+
+  acquireCognitiveServicesToken() {
+    return fetch(`https://vsts-speech-to-task-service.azurewebsites.net/cognitiveservicestoken`, { method: 'POST' })
+          .then(r => {
+            return r.json()
+              .then(json => {
+                if (!r.ok) {
+                  throw new Error(json.message || json.ErrorDescription || JSON.stringify(json))
+                }
+
+                return json
+              })
+          })
+          .then(json => json.token)
   },
 
   updateRecognizedHypothesis(hypothesis) {
@@ -114,6 +136,7 @@ export default Ember.Controller.extend({
       },
       (error) => {
         console.error(error);
+        this.stopRecording();
       });
   },
 
